@@ -1,7 +1,10 @@
 name: Unit tests
 
 on:
+  pull_request:
   push:
+    branches:
+      - "main"
 
 jobs:
   check-diff:
@@ -10,12 +13,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Set target branches
         id: target_branch
         run: |
           set -xv
-          from="${{ toJSON(github.event.before) }}"
-          to="${{ toJSON(github.event.after) }}"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            from="origin/${GITHUB_BASE_REF}"
+            to="origin/${GITHUB_HEAD_REF}"
+          else
+            from="${{ toJSON(github.event.before) }}"
+            to="${{ toJSON(github.event.after) }}"
+          fi
           {
             echo "from=${from}"
             echo "to=${to}"
@@ -24,9 +34,12 @@ jobs:
         id: common_diff
         run: |
           set -xv
-          diff=$(git diff --diff-filter="ACDMRTUXB" --name-only "${{ steps.target_branch.outputs.from }}...${{ steps.target_branch.outputs.to }}") -- "libs/common/**" | xargs)
-          echo "diff=$diff" >> "$GITHUB_ENV"
+          diff=$(git diff "${{ steps.target_branch.outputs.from }}..${{ steps.target_branch.outputs.to }}" --diff-filter="ACDMRTUXB" --name-only -- "libs/common/**" | xargs)
+          echo "diff=$diff" >> "$GITHUB_OUTPUT"
   common-test:
+    needs:
+      - check-diff
+    if: needs.check-diff.outputs.common-diff != ''
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -55,6 +68,7 @@ jobs:
           cache-dependency-glob: "libs/common/uv.lock"
       - name: Install dependencies
         run: uv sync --group dev
+        working-directory: libs/common
       - name: Run tests
         run: uv run poe test --cov-report xml
         working-directory: libs/common
