@@ -7,7 +7,9 @@ requires-python = ">=3.11"
 dependencies = [
     "aws-lambda-powertools>=3.2.0",
     "mysql-connector-python>=9.1.0",
+    "pydantic>=2.9.2",
     "sqlalchemy>=2.0.36",
+    "ulid-py>=1.1.0",
 ]
 
 [build-system]
@@ -24,6 +26,7 @@ dev = [
     "pytest>=8.3.3",
     "pytest-cov>=5.0.0",
     "ruff>=0.7.1",
+    "syrupy>=4.7.2",
 ]
 
 [tool.ruff]
@@ -34,11 +37,15 @@ select = ["E", "F", "W", "I", "B"]
 
 [tool.mypy]
 ignore_missing_imports = true
-plugins = ["sqlalchemy.ext.mypy.plugin"]
+plugins = ["sqlalchemy.ext.mypy.plugin", "pydantic.mypy"]
 
 [tool.poe.tasks.test]
 help = "Run pytest"
 cmd = "python -m pytest"
+
+[tool.poe.tasks.test-snapshot-update]
+help = "Run pytest and update snapshots"
+cmd = "python -m pytest --snapshot-update"
 
 [tool.pytest.ini_options]
 addopts = "--cov=common --cov-report term-missing"
