@@ -1,0 +1,22 @@
+# serializer version: 1
+# name: TestEdinetCompany.test_invalid_account_closing_date[テスト]
+  EdinetCompany(edinet_code='E00001', submitter_type='内国法人・組合', is_listed=None, is_consolidated=None, capital_stock=None, account_closing_month_date=MonthDate(text='テスト', month=None, date=None), name='テスト株式会社', english_name=None, name_kana=None, address=None, industry=None, ticker_symbol=None, corporate_number=None, account_closing_month=None, account_closing_date=None)
+# ---
+# name: TestEdinetCompany.test_invalid_account_closing_date[二月末日]
+  EdinetCompany(edinet_code='E00001', submitter_type='内国法人・組合', is_listed=None, is_consolidated=None, capital_stock=None, account_closing_month_date=MonthDate(text='二月末日', month=None, date=None), name='テスト株式会社', english_name=None, name_kana=None, address=None, industry=None, ticker_symbol=None, corporate_number=None, account_closing_month=None, account_closing_date=None)
+# ---
+# name: TestEdinetCompany.test_invalid_account_closing_date[八月三十一日]
+  EdinetCompany(edinet_code='E00001', submitter_type='内国法人・組合', is_listed=None, is_consolidated=None, capital_stock=None, account_closing_month_date=MonthDate(text='八月三十一日', month=None, date=None), name='テスト株式会社', english_name=None, name_kana=None, address=None, industry=None, ticker_symbol=None, corporate_number=None, account_closing_month=None, account_closing_date=None)
+# ---
+# name: TestEdinetCompany.test_valid[param0]
+  EdinetCompany(edinet_code='E00001', submitter_type='内国法人・組合', is_listed=IsListed(root=<Listed.LISTED: True>), is_consolidated=IsConsolidated(root=<Consolidated.CONSOLIDATED: True>), capital_stock=CapitalStock(root=1000), account_closing_month_date=MonthDate(text='12月31日', month=12, date=31), name='サンプル株式会社', english_name='Sample Co., Ltd.', name_kana='サンプルカブシキガイシャ', address='東京都千代田区千代田１−１', industry=Industry(root=<TSESector.FISHERY_AGRICULTURE_FORESTRY: '水産・農林業'>), ticker_symbol='11110', corporate_number='7010001000000', account_closing_month=12, account_closing_date=31)
+# ---
+# name: TestEdinetCompany.test_valid[param1]
+  EdinetCompany(edinet_code='E00009', submitter_type='内国法人・組合（有価証券報告書等の提出義務者以外）', is_listed=IsListed(root=<Listed.UNLISTED: False>), is_consolidated=IsConsolidated(root=<Consolidated.CONSOLIDATED: True>), capital_stock=CapitalStock(root=1000), account_closing_month_date=MonthDate(text='10 月末日', month=10, date=31), name='株式会社テスト', english_name='Test Co., Ltd.', name_kana='カブシキガイシャテスト', address='東京都千代田区千代田１−１', industry=Industry(root=<TSESector.INFORMATION_COMMUNICATION: '情報・通信業'>), ticker_symbol=None, corporate_number='6010001000001', account_closing_month=10, account_closing_date=31)
+# ---
+# name: TestEdinetCompany.test_valid[param2]
+  EdinetCompany(edinet_code='E10001', submitter_type='外国法人・組合', is_listed=IsListed(root=<Listed.UNLISTED: False>), is_consolidated=IsConsolidated(root=<Consolidated.NON_CONSOLIDATED: False>), capital_stock=CapitalStock(root=1000), account_closing_month_date=MonthDate(text='2月末日', month=2, date=28), name='テスト株式会社', english_name='Test Co., Ltd.', name_kana='テストカブシキガイシャ', address='東京都千代田区千代田１−１', industry=None, ticker_symbol=None, corporate_number='2700150000000', account_closing_month=2, account_closing_date=28)
+# ---
+# name: TestEdinetCompany.test_valid[param3]
+  EdinetCompany(edinet_code='E20001', submitter_type='個人（組合発行者を除く）', is_listed=None, is_consolidated=None, capital_stock=CapitalStock(root=0), account_closing_month_date=None, name='田中\u3000太郎', english_name=None, name_kana='タナカ\u3000タロウ', address=None, industry=None, ticker_symbol=None, corporate_number=None, account_closing_month=None, account_closing_date=None)
+# ---
