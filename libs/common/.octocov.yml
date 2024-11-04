@@ -1,3 +1,4 @@
+repository: inuatsu/python-monorepo-sample/libs/common
 coverage:
   paths:
     - coverage.xml

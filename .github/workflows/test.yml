@@ -72,7 +72,7 @@ jobs:
       - name: Run tests
         run: uv run poe test --cov-report xml
         working-directory: libs/common
-      - if: ${{ !cancelled() }}
+      - if: ${{ matrix.python-version == '3.12' && !cancelled() }}
         uses: k1LoW/octocov-action@v1
         with:
           config: libs/common/.octocov.yml
