@@ -1,0 +1,22 @@
+repository: inuatsu/python-monorepo-sample/libs/pytest-common
+coverage:
+  paths:
+    - coverage.xml
+codeToTestRatio:
+  code:
+    - "pytest_common/**/*.py"
+  test:
+    - "tests/**/test_*.py"
+testExecutionTime:
+diff:
+  if: is_pull_request
+  datastores:
+    - artifact://inuatsu/python-monorepo-sample/pytest-common-coverage-report
+comment:
+  if: is_pull_request
+summary:
+  if: true
+report:
+  if: is_default_branch
+  datastores:
+    - artifact://inuatsu/python-monorepo-sample/pytest-common-coverage-report
