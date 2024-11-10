@@ -2,8 +2,8 @@ central:
   root: .
   reports:
     datastores:
-      - artifact://inuatsu/python-monorepo-sample/common-coverage-report
-      - artifact://inuatsu/python-monorepo-sample/pytest-common-coverage-report
+      - artifact://inuatsu/python-monorepo-sample/common-coverage-report-libs_common
+      - artifact://inuatsu/python-monorepo-sample/pytest-common-coverage-report-libs_pytest-common
   badges:
     datastores:
       - local://badges
