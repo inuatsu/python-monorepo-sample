@@ -1,0 +1,13 @@
+[project]
+name = "download-edinet-codelist"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "common",
+    "injector>=0.22.0",
+]
+
+[tool.uv.sources]
+common = { path = "../../libs/common", editable = true }
