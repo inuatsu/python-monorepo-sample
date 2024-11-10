@@ -1,5 +1,4 @@
 central:
-  if: is_pull_request
   root: .
   reports:
     datastores:
@@ -9,4 +8,5 @@ central:
     datastores:
       - local://badges
   push:
+    if: is_pull_request
     message: Update by octocov [skip ci]
