@@ -54,7 +54,7 @@ jobs:
   common-test:
     needs:
       - check-diff
-    if: needs.check-diff.outputs.common-diff != ''
+    if: needs.check-diff.outputs.common-diff != '' || github.event_name == 'push'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -91,7 +91,7 @@ jobs:
   pytest-common-test:
     needs:
       - check-diff
-    if: needs.check-diff.outputs.pytest-common-diff != ''
+    if: needs.check-diff.outputs.pytest-common-diff != '' || github.event_name == 'push'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -135,27 +135,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
-        if: needs.check-diff.outputs.common-diff != ''
+        if: needs.check-diff.outputs.common-diff != '' || github.event_name == 'push'
         with:
           name: libs-common
           path: ./libs/common/coverage
       - uses: actions/download-artifact@v4
-        if: needs.check-diff.outputs.pytest-common-diff != ''
+        if: needs.check-diff.outputs.pytest-common-diff != '' || github.event_name == 'push'
         with:
           name: libs-pytest-common
           path: ./libs/pytest-common/coverage
       - uses: k1LoW/octocov-action@v1
+        if: needs.check-diff.outputs.common-diff != '' || github.event_name == 'push'
         with:
           config: ./libs/common/.octocov.yml
       - uses: k1LoW/octocov-action@v1
+        if: needs.check-diff.outputs.pytest-common-diff != '' || github.event_name == 'push'
         with:
           config: ./libs/pytest-common/.octocov.yml
       - name: Setup pages
         run: |
           mkdir -p coverage/html/libs
-          mv libs/common/coverage/htmlcov coverage/html/libs/common
-          mv libs/pytest-common/coverage/htmlcov coverage/html/libs/pytest-common
-          echo "<ul><li><a href="libs/common">libs/common</li><li><a href="libs/pytest-common">libs/pytest-common</li></ul>" > coverage/html/index.html
+          echo "<ul>" > coverage/html/index.html
+          if [ -d "libs/common/coverage/htmlcov" ]; then
+            mv libs/common/coverage/htmlcov coverage/html/libs/common
+            echo "<li><a href="libs/common">libs/common</li>" >> coverage/html/index.html
+          fi
+          if [ -d "libs/pytest-common/coverage/htmlcov"]; then
+            mv libs/pytest-common/coverage/htmlcov coverage/html/libs/pytest-common
+            echo "<li><a href="libs/pytest-common">libs/pytest-common</li>" >> coverage/html/index.html
+          fi
+          echo "</ul>" >> coverage/html/index.html
       - uses: rajyan/preview-pages@v1
         with:
           source-dir: coverage/html
