@@ -10,6 +10,7 @@ jobs:
   check-diff:
     outputs:
       common-diff: ${{ steps.common_diff.outputs.diff }}
+      pytest-common-diff: ${{ steps.pytest_common_diff.outputs.diff }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -35,6 +36,12 @@ jobs:
         run: |
           set -xv
           diff=$(git diff "${{ steps.target_branch.outputs.from }}..${{ steps.target_branch.outputs.to }}" --diff-filter="ACDMRTUXB" --name-only -- "libs/common/**" | xargs)
+          echo "diff=$diff" >> "$GITHUB_OUTPUT"
+      - name: Get diff of libs/pytest-common directory
+        id: pytest_common_diff
+        run: |
+          set -xv
+          diff=$(git diff "${{ steps.target_branch.outputs.from }}..${{ steps.target_branch.outputs.to }}" --diff-filter="ACDMRTUXB" --name-only -- "libs/pytest-common/**" | xargs)
           echo "diff=$diff" >> "$GITHUB_OUTPUT"
   common-test:
     needs:
@@ -76,3 +83,43 @@ jobs:
         uses: k1LoW/octocov-action@v1
         with:
           config: libs/common/.octocov.yml
+  pytest-common-test:
+    needs:
+      - check-diff
+    if: needs.check-diff.outputs.pytest-common-diff != ''
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      id-token: write
+      contents: write
+      pull-requests: write
+    strategy:
+      matrix:
+        python-version:
+          - "3.11"
+          - "3.12"
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Get full Python version
+        id: full-python-version
+        run: echo "version=$(python -c 'import sys; print("-".join(str(v) for v in sys.version_info))')" >> $GITHUB_OUTPUT
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          cache-dependency-glob: "libs/pytest-common/uv.lock"
+      - name: Install dependencies
+        run: uv sync --group dev
+        working-directory: libs/pytest-common
+      - name: Run tests
+        run: uv run poe test --cov-report xml
+        working-directory: libs/pytest-common
+      - if: ${{ matrix.python-version == '3.12' && !cancelled() }}
+        uses: k1LoW/octocov-action@v1
+        with:
+          config: libs/pytest-common/.octocov.yml
