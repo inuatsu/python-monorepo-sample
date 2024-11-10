@@ -1,0 +1,12 @@
+central:
+  if: is_pull_request
+  root: .
+  reports:
+    datastores:
+      - artifact://inuatsu/python-monorepo-sample/common-coverage-report
+      - artifact://inuatsu/python-monorepo-sample/pytest-common-coverage-report
+  badges:
+    datastores:
+      - local://badges
+  push:
+    message: Update by octocov [skip ci]

@@ -123,3 +123,18 @@ jobs:
         uses: k1LoW/octocov-action@v1
         with:
           config: libs/pytest-common/.octocov.yml
+  report:
+    needs:
+      - common-test
+      - pytest-common-test
+    if: ${{ !failure() }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      id-token: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: k1LoW/octocov-action@v1
+        with:
+          config: .octocov.yml
