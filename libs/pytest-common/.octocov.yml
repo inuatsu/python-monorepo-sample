@@ -1,13 +1,12 @@
 repository: inuatsu/python-monorepo-sample/libs/pytest-common
 coverage:
   paths:
-    - coverage.xml
+    - coverage/coverage.xml
 codeToTestRatio:
   code:
     - "pytest_common/**/*.py"
   test:
     - "tests/**/test_*.py"
-testExecutionTime:
 diff:
   if: is_pull_request
   datastores:
