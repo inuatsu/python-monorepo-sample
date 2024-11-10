@@ -2,7 +2,7 @@ import json
 import re
 from os import environ
 from pathlib import Path
-from subprocess import STDOUT, check_output
+from subprocess import STDOUT, CalledProcessError, check_output
 from time import sleep
 from timeit import default_timer
 from typing import Type
@@ -87,9 +87,13 @@ def execute_docker_compose_up_down(
     up_fn = root_tmp_dir.joinpath("up.txt")
     is_container_exist_fn = root_tmp_dir.joinpath("is_container_exists.txt")
 
-    output = check_output(
-        'docker ps -a --format "{{.Names}}" | grep -w "^pytest_common_mysql$"', stderr=STDOUT, shell=True
-    )
+    #  Check if MySQL container already exists. If exists, skip docker compose up/down
+    try:
+        output = check_output(
+            'docker ps -a --format "{{.Names}}" | grep -w "^pytest_common_mysql$"', stderr=STDOUT, shell=True
+        )
+    except CalledProcessError:
+        output = b""
     with FileLock(str(is_container_exist_fn) + ".lock"):
         if not is_container_exist_fn.is_file():
             with open(is_container_exist_fn, "w") as f:
